@@ -45,6 +45,13 @@ fetch(
         .domain(d3.extent(dataset, (d) => d.Time)) //input // ["36.50", "39.50"]
         .range([padding, svgHeight]); //output
 
+      // tooltip
+      const tooltip = d3
+        .select(".visHolder")
+        .append("div")
+        .attr("id", "tooltip")
+        .style("opacity", 0);
+
       const svg = d3
         .select("body")
         .append("svg")
@@ -63,7 +70,23 @@ fetch(
         .attr("cx", (d) => xScale(d.Year))
         .attr("data-xvalue", (d) => d.Year)
         .attr("cy", (d) => yScale(d.Time))
-        .attr("data-yvalue", (d) => d.Time.toISOString());
+        .attr("data-yvalue", (d) => d.Time.toISOString())
+        .attr("fill", (d) => (d.Doping !== "" ? "red" : "blue"))
+        .on("mouseover", (d, i) => {
+          tooltip.transition().duration(200).style("opacity", 0.9);
+          tooltip
+            .html(
+              `Name: ${d.Name}, Nationality: ${d.Nationality}, Place: ${
+                d.Place
+              }, Seconds: ${d.Seconds}. ${
+                d.Doping !== "" ? "Doping: " + d.Doping : ""
+              }`
+            )
+            .attr("data-year", d.Year);
+        })
+        .on("mouseout", () => {
+          tooltip.transition().duration(200).style("opacity", 0);
+        });
 
       // create x-axis
       const yearFormat = d3.format("d");
@@ -94,10 +117,45 @@ fetch(
         .call(xAxis)
         .append("text")
         .attr("class", "x-axis-label")
-        .attr("x", width)
+        .attr("x", svgWidth)
         .attr("y", -6)
         .style("text-anchor", "end")
         .text("Year");
+
+      // legend
+      //   svg.append("legend").attr("id", "legend").text("descriptive text");
+
+      var legendContainer = svg.append("g").attr("id", "legend");
+
+      let legendData = [
+        ["doping allegations", "red"],
+        ["clean", "blue"],
+      ];
+
+      var legend = legendContainer
+        .selectAll("#legend")
+        .data(legendData)
+        .enter()
+        .append("legend")
+        .attr("class", "legend-label")
+        .attr("transform", (d, i) => {
+          return "translate(0," + (svgHeight / 2 - i * 20) + ")";
+        });
+
+      legend
+        .append("rect")
+        .attr("x", svgWidth - 18)
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", (d) => d[1]);
+
+      legend
+        .append("text")
+        .attr("x", svgWidth - 24)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text((d) => d[0]);
     });
   })
   .catch((err) => {
