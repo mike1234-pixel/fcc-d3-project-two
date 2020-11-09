@@ -1,7 +1,7 @@
-# fcc-d3-project-two
-# fcc d3 data visualisation project two: scatterplot graph
+## fcc-d3-project-two
+## fcc d3 data visualisation project two: scatterplot graph
 
-## Doping In Pro-Cycling: Scatterplot
+# Doping In Pro-Cycling: Scatterplot
 
 This is a data visualisation project created with help from d3.js, a data vis library used to manually translate raw data into svg shapes.
 
