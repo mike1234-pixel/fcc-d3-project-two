@@ -72,20 +72,22 @@ fetch(
         .attr("cy", (d) => yScale(d.Time))
         .attr("data-yvalue", (d) => d.Time.toISOString())
         .attr("fill", (d) => (d.Doping !== "" ? "red" : "blue"))
-        .on("mouseover", (d, i) => {
-          tooltip.transition().duration(200).style("opacity", 0.9);
+        .on("mouseover", (d) => {
+          tooltip.style("opacity", 0.9);
+          tooltip.attr("id", "tooltip");
+          // tooltip.attr("data-value", d.data.value);
           tooltip
             .html(
-              `Name: ${d.Name}, Nationality: ${d.Nationality}, Place: ${
-                d.Place
-              }, Seconds: ${d.Seconds}. ${
-                d.Doping !== "" ? "Doping: " + d.Doping : ""
-              }`
+              `<p>Name: ${d.Name}</p><p>Nationality: ${d.Nationality}</p><p>Place: ${d.Place}</p><p>Seconds: ${d.Seconds}</p><p>Doping: ${d.Doping}</p>`
             )
-            .attr("data-year", d.Year);
+            .style("position", "absolute")
+            .style("background-color", "grey")
+            .style("padding", "10px");
+          tooltip.style("left", d3.event.pageX + 10 + "px");
+          tooltip.style("top", d3.event.pageY - 28 + "px"); // tooltip location = hover location
         })
-        .on("mouseout", () => {
-          tooltip.transition().duration(200).style("opacity", 0);
+        .on("mouseout", (d) => {
+          tooltip.style("opacity", 0);
         });
 
       // create x-axis
@@ -123,7 +125,6 @@ fetch(
         .text("Year");
 
       // legend
-      //   svg.append("legend").attr("id", "legend").text("descriptive text");
 
       var legendContainer = svg.append("g").attr("id", "legend");
 
@@ -156,8 +157,28 @@ fetch(
         .attr("dy", ".35em")
         .style("text-anchor", "end")
         .text((d) => d[0]);
+
+        // axis labels
+
+      svg.append("text")
+      .attr("class", "x-label")
+      .attr("text-anchor", "end")
+      .attr("x", svgWidth - 30)
+      .attr("y", svgHeight + 30)
+      .text("Year");
+
+      svg.append("text")
+      .attr("class", "y-label")
+      .attr("text-anchor", "end")
+      .attr("y", 6)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(-90)")
+      .text("Minutes");
+
     });
   })
   .catch((err) => {
     console.log("Fetch Error :-S", err);
   });
+
+

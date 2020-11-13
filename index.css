@@ -1,0 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+
+body {
+  font-family: Montserrat;
+  background-image: url("./images/pro-cycling.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.dot {
+  cursor: pointer;
+}
+
+.y-label,
+.x-label {
+  font-weight: bold;
+}
